@@ -244,7 +244,7 @@ elif 'jsmol' in query:
                 body = jmolBody.read()
                 body = body.replace("jmolApplet0","jmolApplet"+str(i))
                 #temporary until I upload all data
-                body = body.replace("GaussianDir","/data/import360")
+                body = body.replace("GaussianDir","http://www.chemeddl.org/resources/models360/data")
                 body = body.replace("GaussianName",gaussianFile)
                 print body
             i+=1
