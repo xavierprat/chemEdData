@@ -1,0 +1,8 @@
+YOUR_SERVER = chemdata.r.umn.edu
+WEB_DIR = /var/www
+ROOT_DIR = chemEdData
+JQUERY_DIR = libs/jquery/2.2.4
+JQUERYUI_DIR = libs/jqueryui/1.11.4
+JQUERYUICSS_DIR = libs/jqueryui/1.11.4/themes/smoothness
+DATATABLES_DIR = libs/datatables
+JSMOL_DIR = libs/jsmol/jmol-14.8.0

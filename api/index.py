@@ -6,6 +6,14 @@ import gzip
 import urllib
 import urllib2
 
+#define directories
+libs_file = open("../libs_dir.txt","r")
+for line in libs_file.readlines():
+    args = line.split("=")
+    lib_name = args[0].strip()
+    lib_dir = args[1].strip()
+    exec( "%s = '%s'" % (lib_name,lib_dir))
+
 htmlHead = "Content-type: text/html\n"
 print htmlHead
 
@@ -61,7 +69,7 @@ results = {}
 
 #COLLECTION
 if query["collection"] == "models360":
-    with gzip.open("../data/models360json/models360compData.json.gz","rb") as f:
+    with gzip.open("../data/models360/models360.json.gz","rb") as f:
         data = json.loads(f.read().decode("ascii"))
 elif query["collection"] == "organic":
     with gzip.open("../data/chemdata/organic/organic.json.gz","rb") as f:
@@ -191,23 +199,43 @@ if 'propout' in query:
 
 elif 'jsmol' in query:
     options = query['jsmol'].split(';')
+    #This tool is only useful for Models360 collection where GaussianFiles are stored
+    if query["collection"] == "models360":
+        jmolBodyTemplate = "jmolBody.html"
+    else:
+        #jump to use jmol.php?mol=name
+        #print("Location:http://chemdata.r.umn.edu/chemEdData/api/jmol.php\r\n")
+        myJmols = []
+        for molecule in sortedResults:
+            for name,mol in molecule.iteritems():
+                myJmols.append(mol["name"].title())
+        if len(myJmols) > 1:
+            stringOfMols = ';'.join(myJmols)
+            print '<meta http-equiv="refresh" content="0; URL=\'jmol.php?mol='+stringOfMols+'&multiple=yes\'" />'
+        elif len(myJmols) == 1:
+            print '<meta http-equiv="refresh" content="0; URL=\'jmol.php?mol='+myJmols[0]+'\'" />'
+        quit()
+
     if "nohead" not in options:
         with open("jmolHead.html","r") as jmolHead:
             head = jmolHead.read()
+            head = head.replace("JQUERY_DIR",JQUERY_DIR)
+            head = head.replace("JQUERYUI_DIR",JQUERYUI_DIR)
+            head = head.replace("JSMOL_DIR",JSMOL_DIR)
             print head
+
     #This info sets the size
     with open("jmolInfo.html","r") as jmolInfo:
         info = jmolInfo.read()
+        info = info.replace("YOUR_SERVER",YOUR_SERVER)
+        info = info.replace("ROOT_DIR",ROOT_DIR)
+        info = info.replace("JSMOL_DIR",JSMOL_DIR)
         for opt in options:
             if opt.isdigit():
                 info = info.replace("300",opt)
         print info
-    i=0
-    if query["collection"] == "models360":
-        jmolBodyTemplate = "jmolBody.html"
-    else:
-        jmolBodyTemplate = "jmolBodyQueryNIH.html"
 
+    i=0
     for molecule in sortedResults:
         for name,mol in molecule.iteritems():
             gaussianFile = mol["gaussianFile"]
@@ -215,7 +243,9 @@ elif 'jsmol' in query:
             with open(jmolBodyTemplate,"r") as jmolBody:
                 body = jmolBody.read()
                 body = body.replace("jmolApplet0","jmolApplet"+str(i))
-                body = body.replace("ZZname",gaussianFile)
+                #temporary until I upload all data
+                body = body.replace("GaussianDir","/data/import360")
+                body = body.replace("GaussianName",gaussianFile)
                 print body
             i+=1
     if "nohead" not in options:
