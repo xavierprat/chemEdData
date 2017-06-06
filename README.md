@@ -1,6 +1,10 @@
 # chemEdData
 # An open initiative for data-oriented learning activities in Chemistry.
 
+About chemEdData
+================
+Read here for more information: https://docs.google.com/document/d/1GOdsX99hhjmUsQ6HYq2kwWJUtSOO9MyR2CEbMZdGVPI/edit?usp=sharing
+
 How to use this tool
 ====================
 
